@@ -1,0 +1,12 @@
+{
+  "domain": "duco_modbus",
+  "name": "Duco Modbus",
+  "version": "0.1.0",
+  "codeowners": ["@janssk1"],
+  "config_flow": true,
+  "dependencies": ["modbus"],
+  "documentation": "https://github.com/janssk1/ha-duco-modbus",
+  "iot_class": "local_polling",
+  "integration_type": "hub",
+  "requirements": []
+}
