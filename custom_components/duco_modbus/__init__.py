@@ -1,4 +1,4 @@
-"""The duco integration."""
+"""The Duco Modbus integration."""
 from __future__ import annotations
 
 from dataclasses import dataclass
