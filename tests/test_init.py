@@ -3,7 +3,7 @@
 from homeassistant.core import HomeAssistant
 
 from custom_components.duco_modbus.const import CONF_DEVICE, CONF_FAKE, CONF_UNIT, DOMAIN
-from tests.common import MockConfigEntry
+from pytest_homeassistant_custom_component.common import MockConfigEntry
 
 
 async def test_setup_entry_fake(hass: HomeAssistant, enable_custom_integrations) -> None:
