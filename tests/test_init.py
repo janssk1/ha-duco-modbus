@@ -10,6 +10,7 @@ async def test_setup_entry_fake(hass: HomeAssistant, enable_custom_integrations)
     """Test loading the integration with fake Modbus."""
     entry = MockConfigEntry(
         domain=DOMAIN,
+        version=2,
         data={
             CONF_DEVICE: "/dev/ttyTEST",
             CONF_UNIT: 1,

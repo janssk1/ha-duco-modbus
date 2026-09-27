@@ -80,6 +80,7 @@ async def async_setup_entry(hass: HomeAssistant, entry: DucoConfigEntry) -> bool
 
     entry.runtime_data = DucoRuntimeData(coordinator=coordinator, nodes=nodes)
     await hass.config_entries.async_forward_entry_setups(entry, PLATFORMS)
+    await coordinator.async_refresh()
     return True
 
 

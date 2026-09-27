@@ -7,7 +7,7 @@ from enum import Enum
 import logging
 from typing import Generic, TypeVar
 
-from homeassistant.components.modbus import (
+from homeassistant.components.modbus.const import (
     CALL_TYPE_REGISTER_HOLDING,
     CALL_TYPE_REGISTER_INPUT,
 )

@@ -2,7 +2,7 @@
 
 import pytest
 
-from homeassistant.components.modbus import CALL_TYPE_REGISTER_INPUT
+from homeassistant.components.modbus.const import CALL_TYPE_REGISTER_INPUT
 
 from custom_components.duco_modbus.fakemodbus import FakeModbusUnit
 from custom_components.duco_modbus.modbus_util import ModbusUtil

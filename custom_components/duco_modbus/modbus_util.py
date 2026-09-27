@@ -5,7 +5,7 @@ from __future__ import annotations
 import logging
 from typing import TypeVar
 
-from homeassistant.components.modbus import (
+from homeassistant.components.modbus.const import (
     CALL_TYPE_REGISTER_HOLDING,
     CALL_TYPE_REGISTER_INPUT,
 )

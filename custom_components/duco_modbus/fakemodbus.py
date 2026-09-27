@@ -32,7 +32,7 @@ class FakeModbusUnit:
     def _read_block(
         address: int, count: int, registers: dict[int, int]
     ) -> list[int]:
-        return [registers[address + offset] for offset in range(count)]
+        return [registers.get(address + offset, 0) for offset in range(count)]
 
     async def read_input_registers(self, address: int, count: int) -> list[int]:
         """Read input registers."""
