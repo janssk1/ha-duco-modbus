@@ -1,22 +1,12 @@
-"""Test utility to allow testing of the Duco integration without a real Modbus device."""
+"""Fake Modbus unit for development and tests."""
+
 from __future__ import annotations
 
-from homeassistant.components.modbus import (
-    CALL_TYPE_REGISTER_HOLDING,
-    CALL_TYPE_REGISTER_INPUT,
-)
-from homeassistant.exceptions import ConfigEntryNotReady
 
+class FakeModbusUnit:
+    """In-memory Modbus unit matching the ModbusUnit protocol."""
 
-class _MyModbusResponse:
-    def __init__(self, registers: list[int]) -> None:
-        self.registers = registers
-
-
-class FakeModbus:
-    """Fake Modbus class."""
-
-    INPUT_REGISTERS = {
+    INPUT_REGISTERS: dict[int, int] = {
         10: 10,
         11: 0,
         12: 69,
@@ -29,33 +19,48 @@ class FakeModbus:
         29: 1,
     }
 
-    HOLDING_REGISTERS = {
+    HOLDING_REGISTERS: dict[int, int] = {
         10: 65535,
     }
 
-    @staticmethod
-    def __create_read_responses(
-        first_address: int, count: int | list[int], registers: dict[int, int]
-    ):
-        try:
-            response = [
-                registers[address]
-                for address in range(first_address, first_address + int(count))  # type: ignore[arg-type]
-            ]
-            return _MyModbusResponse(response)
-        except KeyError:
-            return None
+    @property
+    def connected(self) -> bool:
+        """Return connected state."""
+        return True
 
-    async def async_pymodbus_call(
-        self, unit: int | None, address: int, value: int | list[int], use_call: str
-    ):
-        """Convert async to sync pymodbus call."""
-        if use_call == CALL_TYPE_REGISTER_INPUT:
-            return FakeModbus.__create_read_responses(
-                address, value, self.INPUT_REGISTERS
-            )
-        if use_call == CALL_TYPE_REGISTER_HOLDING:
-            return FakeModbus.__create_read_responses(
-                address, value, self.HOLDING_REGISTERS
-            )
-        raise ConfigEntryNotReady(f"unsupported request {use_call}")
+    @staticmethod
+    def _read_block(
+        address: int, count: int, registers: dict[int, int]
+    ) -> list[int]:
+        return [registers[address + offset] for offset in range(count)]
+
+    async def read_input_registers(self, address: int, count: int) -> list[int]:
+        """Read input registers."""
+        return self._read_block(address, count, self.INPUT_REGISTERS)
+
+    async def read_holding_registers(self, address: int, count: int) -> list[int]:
+        """Read holding registers."""
+        return self._read_block(address, count, self.HOLDING_REGISTERS)
+
+    async def write_register(self, address: int, value: int) -> None:
+        """Write a holding register."""
+        self.HOLDING_REGISTERS[address] = value
+
+    async def write_registers(self, address: int, values: list[int]) -> None:
+        """Write multiple holding registers."""
+        for offset, value in enumerate(values):
+            self.HOLDING_REGISTERS[address + offset] = value
+
+    async def read_coils(self, address: int, count: int) -> list[bool]:
+        """Read coils (not used by Duco)."""
+        return [False] * count
+
+    async def read_discrete_inputs(self, address: int, count: int) -> list[bool]:
+        """Read discrete inputs (not used by Duco)."""
+        return [False] * count
+
+    async def write_coil(self, address: int, value: bool) -> None:
+        """Write coil (not used by Duco)."""
+
+    async def write_coils(self, address: int, values: list[bool]) -> None:
+        """Write coils (not used by Duco)."""

@@ -10,8 +10,7 @@ from homeassistant.config_entries import ConfigEntry
 from homeassistant.core import HomeAssistant
 from homeassistant.helpers.entity_platform import AddEntitiesCallback
 
-from . import DucoData
-from .const import DOMAIN
+from . import DucoConfigEntry
 from .entity import DucoEntity, NodeInfo
 from .modbus_model import (
     PARAM_TARGET_VENTILATION_PERCENTAGE,
@@ -69,14 +68,15 @@ class DucoVentilationStatusSelect(DucoEntity, SelectEntity):
 
 async def async_setup_entry(
     hass: HomeAssistant,
-    config_entry: ConfigEntry,
+    config_entry: DucoConfigEntry,
     async_add_entities: AddEntitiesCallback,
 ) -> None:
-    """Set up the Duco number entities."""
-    data: DucoData = hass.data[DOMAIN][config_entry.entry_id]
+    """Set up the Duco select entities."""
+    assert config_entry.runtime_data is not None
+    nodes = config_entry.runtime_data.nodes
 
     entities = []
-    for node in data.nodes:
+    for node in nodes:
         if node.node_type == ModuleType.MASTER_UNIT:
             entities.append(DucoVentilationStatusSelect(VENTILATION_STATUS, node))
         elif node.node_type == ModuleType.CO2_VALVE:

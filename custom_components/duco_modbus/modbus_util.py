@@ -1,4 +1,5 @@
 """Generic ModBus utilities."""
+
 from __future__ import annotations
 
 import logging
@@ -7,9 +8,8 @@ from typing import TypeVar
 from homeassistant.components.modbus import (
     CALL_TYPE_REGISTER_HOLDING,
     CALL_TYPE_REGISTER_INPUT,
-    CALL_TYPE_WRITE_REGISTER,
-    ModbusHub,
 )
+from modbus_connection import ModbusUnit
 
 _LOGGER = logging.getLogger(__name__)
 
@@ -44,7 +44,7 @@ class ModbusAddressRegistry:
         self._input_addresses: set[int] = set()
         self._holding_addresses: set[int] = set()
 
-    def add_address(self, address: int, register_type: str):
+    def add_address(self, address: int, register_type: str) -> None:
         """Add an address to the registry."""
         registers = (
             self._input_addresses
@@ -99,13 +99,13 @@ class ModbusAddressRegistry:
 
 
 class ModbusUtil:
-    """Utility class for ModBus."""
+    """Utility class for ModBus via a shared ModbusUnit."""
 
-    def __init__(self, slave_id: int, modbus: ModbusHub) -> None:
+    def __init__(self, unit: ModbusUnit, unit_id: int) -> None:
         """Initialize the ModBus utility."""
-        super().__init__()
-        self.slave_id = slave_id
-        self.modbus = modbus
+        self._unit = unit
+        self.unit_id = unit_id
+        self.slave_id = unit_id  # legacy name used in entity device ids
 
     async def read_register(self, register: int, register_type: str) -> int | None:
         """Read a single register from ModBus."""
@@ -116,20 +116,18 @@ class ModbusUtil:
         self, register: int, register_count: int, register_type: str
     ) -> list[int] | None:
         """Read a set of registers from ModBus."""
-        response = await self.modbus.async_pb_call(
-            self.slave_id, register, register_count, register_type
-        )
-        res = response.registers if response else None
-        for i in range(0, register_count):
+        if register_type == CALL_TYPE_REGISTER_INPUT:
+            res = await self._unit.read_input_registers(register, register_count)
+        else:
+            res = await self._unit.read_holding_registers(register, register_count)
+        for i in range(register_count):
             reg = register + i
             _LOGGER.debug(
                 "read register %s[%s]=%s", register_type, reg, res[i] if res else None
             )
         return res
 
-    async def write_holding_register(self, register: int, value: int):
+    async def write_holding_register(self, register: int, value: int) -> None:
         """Write a single register to ModBus."""
         _LOGGER.debug("writing register holding[%s]=%s", register, value)
-        await self.modbus.async_pb_call(
-            self.slave_id, register, value, CALL_TYPE_WRITE_REGISTER
-        )
+        await self._unit.write_register(register, value)

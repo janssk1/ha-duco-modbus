@@ -1,21 +1,6 @@
-# Add to configuration.yaml (Home Assistant Modbus integration).
-# Restart Home Assistant after editing, then add "Duco Modbus" via Settings.
+# Optional: debug logging only. Modbus is configured in the Duco Modbus UI.
 
-modbus:
-  - name: duco_hub
-    type: serial
-    method: rtu
-    port: /dev/ttyUSB0
-    baudrate: 9600
-    bytesize: 8
-    parity: N
-    stopbits: 1
-    close_comm_on_error: true
-    delay: 2
-    timeout: 5
-
-# Optional debug logging:
-# logger:
-#   default: info
-#   logs:
-#     custom_components.duco_modbus: debug
+logger:
+  default: info
+  logs:
+    custom_components.duco_modbus: debug

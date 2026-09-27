@@ -1,21 +1,12 @@
 """Constants for the Duco Modbus integration."""
 
 DOMAIN = "duco_modbus"
-MODBUS_DOMAIN = "modbus"
-CONF_HUB = "hub"
+
+CONF_DEVICE = "device"
+CONF_BAUDRATE = "baudrate"
+CONF_UNIT = "unit"
 CONF_FAKE = "fake"
+
+DEFAULT_BAUDRATE = 9600
+
 MODEL_NAME = "DucoBox Focus"
-MODBUS_CONFIG_EXAMPLE = """
-            modbus:
-              - name: "duco_hub"
-                close_comm_on_error: true
-                delay: 2
-                timeout: 5
-                type: serial
-                baudrate: 9600
-                bytesize: 8
-                method: rtu
-                parity: N
-                port: /dev/ttyUSB0
-                stopbits: 1
-"""

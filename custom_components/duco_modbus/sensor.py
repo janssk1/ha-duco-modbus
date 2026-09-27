@@ -6,7 +6,6 @@ from homeassistant.components.sensor import (
     SensorEntity,
     SensorEntityDescription,
 )
-from homeassistant.config_entries import ConfigEntry
 from homeassistant.const import (
     CONCENTRATION_PARTS_PER_MILLION,
     PERCENTAGE,
@@ -15,8 +14,7 @@ from homeassistant.const import (
 from homeassistant.core import HomeAssistant
 from homeassistant.helpers.entity_platform import AddEntitiesCallback
 
-from . import DucoData
-from .const import DOMAIN
+from . import DucoConfigEntry
 from .entity import DucoEntity, DucoSingleRegisterEntityDescriptionMixin, NodeInfo
 from .modbus_model import (
     PARAM_VENTILATION_PERCENTAGE,
@@ -110,14 +108,15 @@ class DucoSensor(DucoEntity, SensorEntity):
 
 async def async_setup_entry(
     hass: HomeAssistant,
-    config_entry: ConfigEntry,
+    config_entry: DucoConfigEntry,
     async_add_entities: AddEntitiesCallback,
 ) -> None:
     """Set up the Duco sensors."""
-    data: DucoData = hass.data[DOMAIN][config_entry.entry_id]
+    assert config_entry.runtime_data is not None
+    nodes = config_entry.runtime_data.nodes
 
     entities = []
-    for node in data.nodes:
+    for node in nodes:
         if node.node_type == ModuleType.MASTER_UNIT:
             entities.append(DucoSensor(FAN, node))
         if node.node_type == ModuleType.CO2_VALVE:
