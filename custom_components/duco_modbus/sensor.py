@@ -6,15 +6,12 @@ from homeassistant.components.sensor import (
     SensorEntity,
     SensorEntityDescription,
 )
-from homeassistant.const import (
-    CONCENTRATION_PARTS_PER_MILLION,
-    PERCENTAGE,
-    UnitOfTemperature,
-)
+from homeassistant.const import PERCENTAGE, UnitOfTemperature
 from homeassistant.core import HomeAssistant
 from homeassistant.helpers.entity_platform import AddEntitiesCallback
 
 from . import DucoConfigEntry
+from .const import CO2_UNIT
 from .entity import DucoEntity, DucoSingleRegisterEntityDescriptionMixin, NodeInfo
 from .modbus_model import (
     PARAM_VENTILATION_PERCENTAGE,
@@ -41,7 +38,7 @@ TEMPERATURE = DucoSensorEntityDescription(
 CO2 = DucoSensorEntityDescription(
     key="co2",
     register=NodeInputRegister[int](4, lambda num: num),
-    native_unit_of_measurement=CONCENTRATION_PARTS_PER_MILLION,
+    native_unit_of_measurement=CO2_UNIT,
     device_class=SensorDeviceClass.CO2,
 )
 HUMIDITY = DucoSensorEntityDescription(

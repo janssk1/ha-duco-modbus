@@ -1,5 +1,5 @@
 # Pin to the HA release you run in production (see PHCC README badge).
-# GitHub Actions installs from PyPI; bump when upgrading Home Assistant.
+# GitHub Actions installs from PyPI.
 pytest-homeassistant-custom-component==0.13.364
 modbus-connection[tmodbus]==4.10.0
 pymodbus==3.13.1

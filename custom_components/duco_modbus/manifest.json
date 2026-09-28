@@ -1,7 +1,7 @@
 {
   "domain": "duco_modbus",
   "name": "Duco Modbus",
-  "version": "0.2.0",
+  "version": "0.2.1",
   "codeowners": ["@janssk1"],
   "config_flow": true,
   "dependencies": ["modbus", "usb"],

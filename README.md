@@ -37,9 +37,8 @@ rsync -avz --delete \
 ## Development / tests
 
 ```bash
-python -m venv .venv && source .venv/bin/activate
-pip install -r requirements_test.txt
-pytest tests/
+make install
+make test
 ```
 
 Uses [pytest-homeassistant-custom-component](https://github.com/MatthewFlamm/pytest-homeassistant-custom-component) pinned to the same Home Assistant version as your production Pi.

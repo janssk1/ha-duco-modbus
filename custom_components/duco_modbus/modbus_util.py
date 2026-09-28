@@ -10,6 +10,7 @@ from homeassistant.components.modbus.const import (
     CALL_TYPE_REGISTER_INPUT,
 )
 from modbus_connection import ModbusUnit
+from modbus_connection.exceptions import ModbusExceptionError
 
 _LOGGER = logging.getLogger(__name__)
 
@@ -116,10 +117,22 @@ class ModbusUtil:
         self, register: int, register_count: int, register_type: str
     ) -> list[int] | None:
         """Read a set of registers from ModBus."""
-        if register_type == CALL_TYPE_REGISTER_INPUT:
-            res = await self._unit.read_input_registers(register, register_count)
-        else:
-            res = await self._unit.read_holding_registers(register, register_count)
+        try:
+            if register_type == CALL_TYPE_REGISTER_INPUT:
+                res = await self._unit.read_input_registers(register, register_count)
+            else:
+                res = await self._unit.read_holding_registers(
+                    register, register_count
+                )
+        except ModbusExceptionError as err:
+            _LOGGER.warning(
+                "Modbus read failed (%s address %s, count %s): %s",
+                register_type,
+                register,
+                register_count,
+                err,
+            )
+            return None
         for i in range(register_count):
             reg = register + i
             _LOGGER.debug(

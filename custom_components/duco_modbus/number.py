@@ -13,15 +13,12 @@ from homeassistant.components.number import (
     NumberEntityDescription,
 )
 from homeassistant.config_entries import ConfigEntry
-from homeassistant.const import (
-    CONCENTRATION_PARTS_PER_MILLION,
-    PERCENTAGE,
-    UnitOfVolumeFlowRate,
-)
+from homeassistant.const import PERCENTAGE, UnitOfVolumeFlowRate
 from homeassistant.core import HomeAssistant
 from homeassistant.helpers.entity_platform import AddEntitiesCallback
 
 from . import DucoConfigEntry
+from .const import CO2_UNIT
 from .entity import DucoEntity, DucoSingleRegisterEntityDescriptionMixin, NodeInfo
 from .modbus_model import (
     PARAM_TARGET_VENTILATION_PERCENTAGE,
@@ -65,7 +62,7 @@ CO2_TARGET = DucoNumberEntityDescription(
     native_max_value=2000,
     native_step=10,
     device_class=NumberDeviceClass.CO2,
-    native_unit_of_measurement=CONCENTRATION_PARTS_PER_MILLION,
+    native_unit_of_measurement=CO2_UNIT,
 )
 
 HUMIDITY_TARGET = DucoNumberEntityDescription(
